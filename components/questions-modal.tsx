@@ -1,4 +1,5 @@
 "use client"
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -108,7 +109,6 @@ export function QuestionsModal({ isOpen, onClose, bookTitle, readingTimeSeconds,
     onClose()
 
     // Mostrar modal de ganhos
-    // Aqui você pode implementar um modal de sucesso ou redirecionar
     alert(`Parabéns! Você ganhou R$ ${totalValue.toFixed(2).replace(".", ",")} por sua avaliação!`)
   }
 

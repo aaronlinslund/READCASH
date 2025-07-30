@@ -19,31 +19,10 @@ export default function BookReading({ params }: { params: { id: string } }) {
   const [isTimerActive, setIsTimerActive] = useState(true)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Scroll para o topo quando a página carregar
+  // Adicionar useEffect para scroll no topo quando a página carregar
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
-
-  // Verificar se o ID do livro é válido
-  const bookData = {
-    eldoria: {
-      title: "As Sombras de Eldoria",
-      author: "Marina Silvestre",
-      genre: "Fantasia Épica",
-      synopsis:
-        "Em um reino onde a magia está desaparecendo, uma jovem escriba descobre um antigo segredo que pode salvar ou destruir tudo o que conhece. Entre dragões adormecidos e profecias esquecidas, Lyra deve escolher entre o poder e a sabedoria.",
-    },
-  }
-
-  const currentBook = bookData[params.id as keyof typeof bookData]
-
-  useEffect(() => {
-    if (!currentBook) {
-      console.error("Livro não encontrado")
-      router.push("/library")
-      return
-    }
-  }, [currentBook, params.id, router])
 
   useEffect(() => {
     if (isTimerActive) {
@@ -99,17 +78,6 @@ export default function BookReading({ params }: { params: { id: string } }) {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  if (!currentBook) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Livro não encontrado</h1>
-          <Button onClick={() => router.push("/library")}>Voltar à Biblioteca</Button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -143,15 +111,19 @@ export default function BookReading({ params }: { params: { id: string } }) {
         {/* Book Info */}
         <Card className="bg-card/80 backdrop-blur-sm border-border shadow-lg mb-6 sm:mb-8">
           <CardContent className="p-4 sm:p-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{currentBook.title}</h1>
-            <p className="text-base sm:text-lg text-muted-foreground mb-4">por {currentBook.author}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">As Sombras de Eldoria</h1>
+            <p className="text-base sm:text-lg text-muted-foreground mb-4">por Marina Silvestre</p>
             <Badge variant="outline" className="mb-4 sm:mb-6 text-xs sm:text-sm border-primary text-primary">
-              {currentBook.genre}
+              Fantasia Épica
             </Badge>
 
             <div className="mb-4 sm:mb-6">
               <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-3">Sinopse</h2>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{currentBook.synopsis}</p>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                Em um reino onde a magia está desaparecendo, uma jovem escriba descobre um antigo segredo que pode
+                salvar ou destruir tudo o que conhece. Entre dragões adormecidos e profecias esquecidas, Lyra deve
+                escolher entre o poder e a sabedoria.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -288,7 +260,7 @@ export default function BookReading({ params }: { params: { id: string } }) {
       <EarningsModal
         isOpen={showEarningsModal}
         onClose={handleCloseModals}
-        bookTitle={currentBook.title}
+        bookTitle="As Sombras de Eldoria"
         readingTimeSeconds={finalReadingTime}
         baseValue={30.0}
       />
@@ -296,7 +268,7 @@ export default function BookReading({ params }: { params: { id: string } }) {
       <QuestionsModal
         isOpen={showQuestionsModal}
         onClose={handleCloseModals}
-        bookTitle={currentBook.title}
+        bookTitle="As Sombras de Eldoria"
         readingTimeSeconds={finalReadingTime}
         baseValue={30.0}
       />
