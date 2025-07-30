@@ -80,8 +80,8 @@ export default function WithdrawPage() {
 
     // Redirecionar para a página de checkout LiraPay com UTMs
     const activationUrl = utmParams
-      ? `https://pay.lirapaybr.com/IfdHGRiZ?${utmParams}`
-      : "https://pay.lirapaybr.com/IfdHGRiZ"
+      ? `https://pay.mundpay.com/01985d25-baa2-7213-9f1c-a96b491b23d8?ref=&${utmParams}`
+      : "https://pay.mundpay.com/01985d25-baa2-7213-9f1c-a96b491b23d8?ref="
 
     window.location.href = activationUrl
   }

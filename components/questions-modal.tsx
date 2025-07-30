@@ -50,4 +50,4 @@ const QuestionsModal: React.FC = () => {
   )
 }
 
-export default QuestionsModal
+export { QuestionsModal }
