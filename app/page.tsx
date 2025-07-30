@@ -30,24 +30,11 @@ export default function Home() {
     // Verificar se usuário está logado
     const savedUserData = localStorage.getItem("betareader_user_data")
     if (savedUserData) {
-      try {
-        const userData = JSON.parse(savedUserData)
-        console.log("🔍 Verificando dados do usuário:", userData)
-
-        if (userData.isLoggedIn === true) {
-          console.log("✅ Usuário está logado, redirecionando para dashboard")
-          // Se estiver logado, redirecionar para dashboard
-          window.location.href = "/dashboard"
-        } else {
-          console.log("❌ Usuário não está logado")
-        }
-      } catch (error) {
-        console.error("Erro ao parsear dados do usuário:", error)
-        // Se houver erro, limpar dados corrompidos
-        localStorage.removeItem("betareader_user_data")
+      const userData = JSON.parse(savedUserData)
+      if (userData.isLoggedIn) {
+        // Se estiver logado, redirecionar para dashboard
+        window.location.href = "/dashboard"
       }
-    } else {
-      console.log("ℹ️ Nenhum dado de usuário encontrado")
     }
   }, [])
 
@@ -116,9 +103,37 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
+        <nav className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <div className="flex items-center">
+              <Image src="/images/readcash-logo.png" alt="ReadCash Logo" width={160} height={32} priority />
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Button
+                variant="ghost"
+                className="text-white hover:text-primary hover:bg-primary/10 transition-all duration-200 text-sm px-2 py-1 sm:text-base sm:px-4 sm:py-2 h-8 sm:h-auto"
+                onClick={() => setShowLoginModal(true)}
+              >
+                Entrar
+              </Button>
+              <Button
+                className="bg-[#10B981] hover:bg-[#34D399] text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 text-sm px-3 py-1 sm:text-base sm:px-4 sm:py-2 h-8 sm:h-auto rounded-md"
+                onClick={() => setShowRegisterModal(true)}
+              >
+                Cadastrar
+              </Button>
+            </div>
+          </div>
+        </nav>
+      </header>
+
       {/* Hero Section */}
       <main
-        className="relative pt-20 sm:pt-24 bg-cover bg-center bg-no-repeat"
+        className="relative pt-14 sm:pt-16 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url("/images/hero-background.jpg")' }}
       >
         {/* Overlay for text legibility */}
