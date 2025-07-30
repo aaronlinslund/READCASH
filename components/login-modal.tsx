@@ -41,76 +41,82 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
     e.preventDefault()
     setIsLoading(true)
 
-    // Simular processo de login
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Simular processo de login
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
-    // Capturar UTMs originais salvos com prioridade
-    let utmData = null
+      // Capturar UTMs originais salvos com prioridade
+      let utmData = null
 
-    // Primeiro, tentar pegar os UTMs originais protegidos
-    const originalUtms = localStorage.getItem("betareader_original_utms")
-    const sessionUtms = sessionStorage.getItem("betareader_session_utms")
-    const hasValidUtms = localStorage.getItem("betareader_has_valid_utms")
+      // Primeiro, tentar pegar os UTMs originais protegidos
+      const originalUtms = localStorage.getItem("betareader_original_utms")
+      const sessionUtms = sessionStorage.getItem("betareader_session_utms")
+      const hasValidUtms = localStorage.getItem("betareader_has_valid_utms")
 
-    if (hasValidUtms === "true" && originalUtms) {
-      try {
-        utmData = JSON.parse(originalUtms)
-        console.log("✅ Login - Usando UTMs originais protegidos:", utmData)
-      } catch (error) {
-        console.error("❌ Erro ao parsear UTMs originais no login:", error)
+      if (hasValidUtms === "true" && originalUtms) {
+        try {
+          utmData = JSON.parse(originalUtms)
+          console.log("✅ Login - Usando UTMs originais protegidos:", utmData)
+        } catch (error) {
+          console.error("❌ Erro ao parsear UTMs originais no login:", error)
+        }
+      } else if (sessionUtms) {
+        try {
+          utmData = JSON.parse(sessionUtms)
+          console.log("⚠️ Login - Usando UTMs da sessão:", utmData)
+        } catch (error) {
+          console.error("❌ Erro ao parsear UTMs da sessão no login:", error)
+        }
       }
-    } else if (sessionUtms) {
-      try {
-        utmData = JSON.parse(sessionUtms)
-        console.log("⚠️ Login - Usando UTMs da sessão:", utmData)
-      } catch (error) {
-        console.error("❌ Erro ao parsear UTMs da sessão no login:", error)
+
+      // Simular dados do usuário existente
+      const userData = {
+        name: "João Silva",
+        email: formData.email,
+        phone: "(11) 99999-9999",
+        registrationDate: "2024-01-15T10:30:00.000Z",
+        lastLogin: new Date().toISOString(),
+        balance: "R$ 247,50",
+        booksRead: 12,
+        points: 850,
+        isLoggedIn: true,
+        onboardingCompleted: true, // Importante: marcar onboarding como completo
+        // Preservar UTMs se disponíveis
+        originalUtms: utmData,
+        loginSource: utmData
+          ? {
+              source: utmData.utm_source,
+              medium: utmData.utm_medium,
+              campaign: utmData.utm_campaign,
+              content: utmData.utm_content,
+              term: utmData.utm_term,
+              xcod: utmData.xcod,
+              timestamp: utmData.timestamp,
+              original_url: utmData.original_url,
+            }
+          : null,
       }
+
+      localStorage.setItem("betareader_user_data", JSON.stringify(userData))
+
+      // Log detalhado para debug
+      console.log("🔐 Usuário logado:", {
+        name: userData.name,
+        email: userData.email,
+        isLoggedIn: userData.isLoggedIn,
+        utms: userData.loginSource,
+      })
+
+      // Fechar modal
+      onClose()
+
+      // Forçar reload da página para garantir que o estado seja atualizado
+      window.location.href = "/dashboard"
+    } catch (error) {
+      console.error("Erro no login:", error)
+    } finally {
+      setIsLoading(false)
     }
-
-    // Simular dados do usuário existente
-    const userData = {
-      name: "João Silva",
-      email: formData.email,
-      phone: "(11) 99999-9999",
-      registrationDate: "2024-01-15T10:30:00.000Z",
-      lastLogin: new Date().toISOString(),
-      balance: "R$ 247,50",
-      booksRead: 12,
-      points: 850,
-      isLoggedIn: true,
-      // Preservar UTMs se disponíveis
-      originalUtms: utmData,
-      loginSource: utmData
-        ? {
-            source: utmData.utm_source,
-            medium: utmData.utm_medium,
-            campaign: utmData.utm_campaign,
-            content: utmData.utm_content,
-            term: utmData.utm_term,
-            xcod: utmData.xcod,
-            timestamp: utmData.timestamp,
-            original_url: utmData.original_url,
-          }
-        : null,
-    }
-
-    localStorage.setItem("betareader_user_data", JSON.stringify(userData))
-
-    // Log detalhado para debug
-    console.log("🔐 Usuário logado:", {
-      name: userData.name,
-      email: userData.email,
-      utms: userData.loginSource,
-    })
-
-    // Fechar modal
-    onClose()
-
-    // Redirecionar para dashboard
-    router.push("/dashboard")
-
-    setIsLoading(false)
   }
 
   const handleInputChange = (field: string, value: string) => {
