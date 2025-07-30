@@ -42,97 +42,103 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
     e.preventDefault()
     setIsLoading(true)
 
-    // Simular processo de cadastro
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Simular processo de cadastro
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
-    // Capturar UTMs originais salvos com prioridade
-    let utmData = null
+      // Capturar UTMs originais salvos com prioridade
+      let utmData = null
 
-    // Primeiro, tentar pegar os UTMs originais protegidos
-    const originalUtms = localStorage.getItem("betareader_original_utms")
-    const sessionUtms = sessionStorage.getItem("betareader_session_utms")
-    const hasValidUtms = localStorage.getItem("betareader_has_valid_utms")
+      // Primeiro, tentar pegar os UTMs originais protegidos
+      const originalUtms = localStorage.getItem("betareader_original_utms")
+      const sessionUtms = sessionStorage.getItem("betareader_session_utms")
+      const hasValidUtms = localStorage.getItem("betareader_has_valid_utms")
 
-    if (hasValidUtms === "true" && originalUtms) {
-      try {
-        utmData = JSON.parse(originalUtms)
-        console.log("✅ Usando UTMs originais protegidos:", utmData)
-      } catch (error) {
-        console.error("❌ Erro ao parsear UTMs originais:", error)
+      if (hasValidUtms === "true" && originalUtms) {
+        try {
+          utmData = JSON.parse(originalUtms)
+          console.log("✅ Usando UTMs originais protegidos:", utmData)
+        } catch (error) {
+          console.error("❌ Erro ao parsear UTMs originais:", error)
+        }
+      } else if (sessionUtms) {
+        try {
+          utmData = JSON.parse(sessionUtms)
+          console.log("⚠️ Usando UTMs da sessão:", utmData)
+        } catch (error) {
+          console.error("❌ Erro ao parsear UTMs da sessão:", error)
+        }
       }
-    } else if (sessionUtms) {
-      try {
-        utmData = JSON.parse(sessionUtms)
-        console.log("⚠️ Usando UTMs da sessão:", utmData)
-      } catch (error) {
-        console.error("❌ Erro ao parsear UTMs da sessão:", error)
+
+      // Se não temos UTMs salvos, tentar capturar da URL atual
+      if (!utmData) {
+        const urlParams = new URLSearchParams(window.location.search)
+        const currentUtms = {
+          utm_source: urlParams.get("utm_source"),
+          utm_medium: urlParams.get("utm_medium"),
+          utm_campaign: urlParams.get("utm_campaign"),
+          utm_content: urlParams.get("utm_content"),
+          utm_term: urlParams.get("utm_term"),
+          xcod: urlParams.get("xcod"),
+          timestamp: new Date().toISOString(),
+          original_url: window.location.href,
+        }
+
+        // Só usar se não for do preview
+        if (currentUtms.utm_source && !currentUtms.utm_source.includes("vusercontent.net")) {
+          utmData = currentUtms
+          console.log("📍 Usando UTMs da URL atual:", utmData)
+        }
       }
+
+      // Salvar dados do usuário no localStorage
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        registrationDate: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        balance: "R$ 0.00",
+        booksRead: 0,
+        points: 0,
+        isLoggedIn: true,
+        onboardingCompleted: false, // Novo usuário precisa fazer onboarding
+        // Preservar UTMs originais
+        originalUtms: utmData,
+        registrationSource: utmData
+          ? {
+              source: utmData.utm_source,
+              medium: utmData.utm_medium,
+              campaign: utmData.utm_campaign,
+              content: utmData.utm_content,
+              term: utmData.utm_term,
+              xcod: utmData.xcod,
+              timestamp: utmData.timestamp,
+              original_url: utmData.original_url,
+            }
+          : null,
+      }
+
+      localStorage.setItem("betareader_user_data", JSON.stringify(userData))
+
+      // Log detalhado para debug
+      console.log("👤 Usuário cadastrado:", {
+        name: userData.name,
+        email: userData.email,
+        isLoggedIn: userData.isLoggedIn,
+        utms: userData.registrationSource,
+      })
+
+      // Fechar modal
+      onClose()
+
+      // Forçar reload da página para garantir que o estado seja atualizado
+      window.location.href = "/dashboard"
+    } catch (error) {
+      console.error("Erro no cadastro:", error)
+    } finally {
+      setIsLoading(false)
     }
-
-    // Se não temos UTMs salvos, tentar capturar da URL atual
-    if (!utmData) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const currentUtms = {
-        utm_source: urlParams.get("utm_source"),
-        utm_medium: urlParams.get("utm_medium"),
-        utm_campaign: urlParams.get("utm_campaign"),
-        utm_content: urlParams.get("utm_content"),
-        utm_term: urlParams.get("utm_term"),
-        xcod: urlParams.get("xcod"),
-        timestamp: new Date().toISOString(),
-        original_url: window.location.href,
-      }
-
-      // Só usar se não for do preview
-      if (currentUtms.utm_source && !currentUtms.utm_source.includes("vusercontent.net")) {
-        utmData = currentUtms
-        console.log("📍 Usando UTMs da URL atual:", utmData)
-      }
-    }
-
-    // Salvar dados do usuário no localStorage
-    const userData = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      registrationDate: new Date().toISOString(),
-      lastLogin: new Date().toISOString(),
-      balance: "R$ 0.00",
-      booksRead: 0,
-      points: 0,
-      isLoggedIn: true,
-      // Preservar UTMs originais
-      originalUtms: utmData,
-      registrationSource: utmData
-        ? {
-            source: utmData.utm_source,
-            medium: utmData.utm_medium,
-            campaign: utmData.utm_campaign,
-            content: utmData.utm_content,
-            term: utmData.utm_term,
-            xcod: utmData.xcod,
-            timestamp: utmData.timestamp,
-            original_url: utmData.original_url,
-          }
-        : null,
-    }
-
-    localStorage.setItem("betareader_user_data", JSON.stringify(userData))
-
-    // Log detalhado para debug
-    console.log("👤 Usuário cadastrado:", {
-      name: userData.name,
-      email: userData.email,
-      utms: userData.registrationSource,
-    })
-
-    // Fechar modal
-    onClose()
-
-    // Redirecionar para dashboard
-    router.push("/dashboard")
-
-    setIsLoading(false)
   }
 
   const handleInputChange = (field: string, value: string) => {

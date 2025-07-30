@@ -30,11 +30,24 @@ export default function Home() {
     // Verificar se usuário está logado
     const savedUserData = localStorage.getItem("betareader_user_data")
     if (savedUserData) {
-      const userData = JSON.parse(savedUserData)
-      if (userData.isLoggedIn) {
-        // Se estiver logado, redirecionar para dashboard
-        window.location.href = "/dashboard"
+      try {
+        const userData = JSON.parse(savedUserData)
+        console.log("🔍 Verificando dados do usuário:", userData)
+
+        if (userData.isLoggedIn === true) {
+          console.log("✅ Usuário está logado, redirecionando para dashboard")
+          // Se estiver logado, redirecionar para dashboard
+          window.location.href = "/dashboard"
+        } else {
+          console.log("❌ Usuário não está logado")
+        }
+      } catch (error) {
+        console.error("Erro ao parsear dados do usuário:", error)
+        // Se houver erro, limpar dados corrompidos
+        localStorage.removeItem("betareader_user_data")
       }
+    } else {
+      console.log("ℹ️ Nenhum dado de usuário encontrado")
     }
   }, [])
 
